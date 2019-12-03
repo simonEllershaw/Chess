@@ -1,8 +1,8 @@
-OBJ = Rook.o Helper.o Piece.o ChessBoard.o
+OBJ = Rook.o Helper.o Piece.o ChessBoard.o Test.o Position.o
 
 EXE = chess
 CXX = g++
-CXXFLAGS = -Wall -g -Wextra -MMD
+CXXFLAGS = -g #-Wall -g -Wextra -MMD
 
 $(EXE): $(OBJ)
 	$(CXX) $^ -o $@

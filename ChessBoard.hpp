@@ -3,6 +3,8 @@
 
 #include "Helper.hpp"
 #include "Piece.hpp"
+#include"Position.hpp"
+
 
 const int lengthInputStrings = 3;
 
@@ -100,6 +102,9 @@ class ChessBoard{
     bool pieceInTheWay(Piece* pieceToMove, Position fromPosition,
                                                         Position toPosition);
 
+    void initRooks();
+
+    Position convertWhiteToBlackStartPos(const Position& whiteStartPosition);
 };
 
 #endif
