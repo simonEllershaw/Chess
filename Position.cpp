@@ -1,17 +1,19 @@
 #include "Position.hpp"
 
-
-void Position::getNormAndMagToPos(Position& otherPosition, Vector& normal, int& magnitude){
-
-  const Position diffInPos = otherPosition - *(this);
-  magnitude= std::max(abs(diffInPos.column), abs(diffInPos.row));
-  normal = {int(diffVector.column / magnitude), int(diffVector.row / magnitude)};
-}
-
-Position Position::operator-(Position& otherPosition){
+Position Position::operator-(const Position& otherPosition){
   return {column - otherPosition.column, row - otherPosition.row};
 }
 
-std::ostream& operator<<(std::ostream & o, Position& p){
-  return o << p.column << p.row << std::endl;
+std::ostream& operator<<(std::ostream & o, const Position& p){
+  return o << p.column << " " << p.row;
+}
+
+bool Position::operator==(const Position& otherPosition) const{
+  if(otherPosition.column!=column) return false;
+  if(otherPosition.row!=row) return false;
+  return true;
+}
+
+bool Position::operator!=(const Position& otherPosition) const{
+  return !(*this == otherPosition);
 }

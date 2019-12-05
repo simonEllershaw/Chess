@@ -1,8 +1,9 @@
-OBJ = Rook.o Helper.o Piece.o ChessBoard.o Test.o Position.o
+OBJ = Helper.o Piece.o ChessBoard.o Position.o MoveVector.o\
+			Rook.o Bishop.o Queen.o King.o Knight.o Pawn.o Test.o Player.o
 
 EXE = chess
 CXX = g++
-CXXFLAGS = -g #-Wall -g -Wextra -MMD
+CXXFLAGS = -Wall -g -Wextra -MMD
 
 $(EXE): $(OBJ)
 	$(CXX) $^ -o $@

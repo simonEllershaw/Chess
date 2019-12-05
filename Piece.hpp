@@ -3,32 +3,36 @@
 
 #include"Position.hpp"
 #include"Helper.hpp"
+#include"MoveVector.hpp"
 #include<ostream>
 #include<list>
 
 class Piece{
 
 protected:
-  std::list<Position> startingPositions;
-  char symbol;
   Colour colour;
+  char symbol;
+
 
 public:
-  Piece(Colour colour);
+  Piece(Colour colour, char symbol);
 
   Colour getColour();
 
-  std::list<Position> getStartingPositions();
+  char getSymbol();
 
-  virtual bool moveShapeIsValid(const Position& fromPosition,
-                                                const Position& toPosition);
+  virtual bool moveShapeIsValid(const MoveVector& currentMoveVector,
+                                                  const Piece* pieceToTake) = 0;
 
-  virtual std::list<Position> getSquaresBetween2Positions
-                  (const Position& fromPosition, const Position& toPosition);
+  virtual std::list<Position> getPositionsVistedByMove
+            (const Position& fromPosition, const MoveVector& currentMoveVector);
+
+  virtual void updateStatus(){};
 
   friend std::ostream& operator<<(std::ostream & o, const Piece& p);
-};
 
+  virtual ~Piece(){};
+};
 
 
 

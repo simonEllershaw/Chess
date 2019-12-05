@@ -2,41 +2,29 @@
 #include <algorithm>
 #include <iostream>
 
-Piece::Piece(Colour colour): colour(colour){};
+Piece::Piece(Colour colour, char symbol): colour(colour), symbol(symbol){}
 
 Colour Piece::getColour(){
   return colour;
 }
 
-std::list<Position> Piece::getStartingPositions(){
-  return startingPositions;
+char Piece::getSymbol(){
+  return symbol;
 }
 
+std::list<Position> Piece::getPositionsVistedByMove
+            (const Position& fromPosition, const MoveVector& currentMoveVector){
 
-bool Piece::moveShapeIsValid(const Position& fromPosition,
-                                            const Position& toPosition){
-  return true;
-};
-
-std::list<Position> Piece::getSquaresBetween2Positions(const Position& fromPosition,
-                                                  const Position& toPosition){
-  std::list<Position> squaresBetweenPositions;
-
-  const Position differenceVector = {toPosition.column - fromPosition.column,
-                                          toPosition.row - fromPosition.row};
-  const int magnitude= std::max(abs(differenceVector.column),
-                                                    abs(differenceVector.row));
-  const Position normalVector = {differenceVector.column / magnitude,
-                                            differenceVector.row / magnitude};
-
-  for(int squareNum = 1; squareNum < magnitude; squareNum++){
-    int throughSquareCol = fromPosition.column + squareNum*normalVector.column;
-    int throughSquareRow = fromPosition.row + squareNum*normalVector.row;
-    squaresBetweenPositions.push_back({throughSquareCol, throughSquareRow});
+  std::list<Position> positionsVisited;
+  for(int scaleFactor = 1; scaleFactor < currentMoveVector.magnitude; scaleFactor++){
+    int throughSquareCol = fromPosition.column
+                            + scaleFactor*currentMoveVector.normalVector.column;
+    int throughSquareRow = fromPosition.row
+                              + scaleFactor*currentMoveVector.normalVector.row;
+    positionsVisited.push_back({throughSquareCol, throughSquareRow});
   }
-
-  return squaresBetweenPositions;
-};
+  return positionsVisited;
+}
 
 std::ostream& operator<<(std::ostream & o, const Piece& p){
   char colourSymbol;

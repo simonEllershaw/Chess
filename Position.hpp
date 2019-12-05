@@ -2,19 +2,21 @@
 #define POSITION_H
 
 #include<ostream>
-// #include"Helper.hpp"
 
 struct Position{
   int column;
   int row;
 
-  void getNormAndMagToPos(Position& otherPosition, Vector& normal,
-                                                  int& magnitude);
+  Position operator-(const Position& otherPosition);
 
-  Position operator-(Position& otherPosition);
+  bool operator==(const Position& otherPosition) const;
 
-  friend std::ostream& operator<<(std::ostream & o, Position& p);
+  bool operator!=(const Position& otherPosition) const;
+
+  friend std::ostream& operator<<(std::ostream & o, const Position& p);
 
 };
+
+
 
 #endif
