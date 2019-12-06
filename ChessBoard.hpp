@@ -6,12 +6,15 @@
 #include"Position.hpp"
 #include"MoveVector.hpp"
 #include "Player.hpp"
+#include <stack>
 
 class Player;
 
 class ChessBoard{
   Piece* board[SIZEOFBOARD][SIZEOFBOARD] = {nullptr};
   Player* whitePlayer, *blackPlayer, *currentPlayer;
+  // ALlows for backtracking
+  std::stack<Piece*> savedToPositions;
 
   public:
     ChessBoard();
@@ -35,8 +38,7 @@ class ChessBoard{
     void movePiece(Position fromPosition, Position toPosition);
 
     /* Returns board to state before a move was made. */
-    void undoMove(const Position fromPosition, const Position toPosition,
-                  Piece* takenPiece);
+    void undoMove(const Position fromPosition, const Position toPosition);
 
 
     bool pieceInTheWay(Piece* pieceToMove, const Position& fromPosition,
@@ -57,7 +59,10 @@ class ChessBoard{
                                             Position& position);
 
     /* Deletes all pieces currently stored in the baord array */
-    void deleteAllPieces();
+    void deletePiecesOnBoard();
+
+    void deleteSavedToPositions();
+
 
     /* Prints a representation of the current board state to the command line*/
     friend std::ostream& operator<<(std::ostream & o, const ChessBoard& cb);

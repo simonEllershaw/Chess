@@ -1,5 +1,5 @@
-OBJ = Helper.o Piece.o ChessBoard.o Position.o MoveVector.o\
-			Rook.o Bishop.o Queen.o King.o Knight.o Pawn.o Test.o Player.o
+OBJ = Player.o Helper.o Piece.o ChessBoard.o Position.o MoveVector.o\
+			Rook.o Bishop.o Queen.o King.o Knight.o Pawn.o Test.o
 
 EXE = chess
 CXX = g++

@@ -18,4 +18,9 @@ void testMovementMechanics(ChessBoard& cb);
 
 void testCheck(ChessBoard& cb);
 
+void testStalemate(ChessBoard& cb);
+
+void testCheckmate(ChessBoard& cb);
+
+
 #endif

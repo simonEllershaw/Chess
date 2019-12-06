@@ -22,7 +22,8 @@ ChessBoard::ChessBoard(){
 
 
 void ChessBoard::resetBoard(const bool& noPawns){
-  deleteAllPieces();
+  deletePiecesOnBoard();
+  deleteSavedToPositions();
   setPiecesIntialPositions(noPawns);
   whitePlayer->reset();
   blackPlayer->reset();
@@ -35,7 +36,6 @@ void ChessBoard::submitMove(const char fromPosInput[LENGTH_INPUT_STRINGS],
 {
   Position fromPosition, toPosition;
   int processCode;
-  Piece* pieceMoved;
 
   std::cout << "From: " << fromPosInput << " To: " << toPosInput << std::endl;
   std::cout << currentPlayer->getColour() << "'s turn" << std::endl;
@@ -51,6 +51,9 @@ void ChessBoard::submitMove(const char fromPosInput[LENGTH_INPUT_STRINGS],
   else{
     getPiece(toPosition)->updateStatus();
     currentPlayer = currentPlayer->getOpponent();
+    if(currentPlayer->inCheckmate(this)) std::cout << "CHECKMATE" << std::endl;
+    else if(currentPlayer->inStalemate(this)) std::cout << "STALEMATE" << std::endl;
+    else std::cout << "SUCCESS" << std::endl;
   }
 }
 
@@ -76,25 +79,28 @@ Piece* ChessBoard::getPiece(Position piecePosition) const{
 
 void ChessBoard::takePiece(Position piecePosition){
   // First check taking a piece of a different colour
+  savedToPositions.push(getPiece(piecePosition));
   board[piecePosition.row][piecePosition.column] = nullptr;
 }
 
 
 void ChessBoard::movePiece(Position fromPosition, Position toPosition){
-  board[toPosition.row][toPosition.column] =
-                                  board[fromPosition.row][fromPosition.column];
+  takePiece(toPosition);
+  board[toPosition.row][toPosition.column] = getPiece(fromPosition);
   board[fromPosition.row][fromPosition.column] = nullptr;
 }
 
 
 ChessBoard::~ChessBoard(){
-  deleteAllPieces();
+  deletePiecesOnBoard();
+  deleteSavedToPositions();
   delete whitePlayer;
   delete blackPlayer;
 }
 
 
-void ChessBoard::deleteAllPieces(){
+void ChessBoard::deletePiecesOnBoard(){
+  // Delete all piece on board
   for(int row = 0; row < SIZEOFBOARD; row++){
     for(int column = 0; column < SIZEOFBOARD; column++){
       if(board[row][column]!=nullptr){
@@ -102,6 +108,16 @@ void ChessBoard::deleteAllPieces(){
         board[row][column] = nullptr;
       }
     }
+  }
+}
+
+void ChessBoard::deleteSavedToPositions(){
+  Piece* takenPiece;
+  // Delete taken pieces
+  while(!savedToPositions.empty()){
+    takenPiece = savedToPositions.top();
+    savedToPositions.pop();
+    if(takenPiece != nullptr) delete takenPiece;
   }
 }
 
@@ -155,14 +171,10 @@ int ChessBoard::convertCharToPosition(const char charPosition[LENGTH_INPUT_STRIN
   return SUCCESS;
 }
 
-void ChessBoard::undoMove(const Position fromPosition, const Position toPosition,
-                          Piece* takenPiece){
-  std::cout << "Hello" << std::endl;
-  // Move piece back
-  movePiece(toPosition, fromPosition);
-  // Replace taken piece
-  board[toPosition.row][toPosition.column] = takenPiece;
-  takenPiece = nullptr;
+void ChessBoard::undoMove(const Position fromPosition, const Position toPosition){
+  board[fromPosition.row][fromPosition.column] = board[toPosition.row][toPosition.column];
+  board[toPosition.row][toPosition.column] = savedToPositions.top();
+  savedToPositions.pop();
 }
 
 void ChessBoard::handleProcessCode(int processCode, Position toPosition,
