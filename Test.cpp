@@ -38,6 +38,16 @@ int main(){
   std::cout<< "--------------------Test 8 Input------------------" << std::endl;
   testInput(cb);
 
+  std::cout<< "----------------Test 9 Sample games---------------" << std::endl;
+  test10MoveCheckmate(cb);
+  std::cout << cb << std::endl;
+
+  testShortGame(cb);
+  std::cout << cb << std::endl;
+
+  testKeresVArlamowski(cb);
+  std::cout << cb << std::endl;
+
   return 0;
 }
 
@@ -313,7 +323,55 @@ void testInput(ChessBoard& cb){
   cb.submitMove("Z2", "A34");
   cb.submitMove("A-2", "A34");
   cb.submitMove("A2", "A9");
+}
 
+void test10MoveCheckmate(ChessBoard& cb){
+  cb.resetBoard();
 
+  cb.submitMove("E2", "E4");
+  cb.submitMove("E7", "E5");
+  cb.submitMove("G1", "F3");
+  cb.submitMove("B8", "C6");
+  cb.submitMove("B1", "C3");
+  cb.submitMove("G8", "F6");
+  cb.submitMove("F1", "C4");
+  cb.submitMove("D7", "D6");
+  cb.submitMove("F3", "G5");
+  cb.submitMove("C8", "G4");
+  cb.submitMove("C4", "F7");
+  cb.submitMove("E8", "E7");
+  cb.submitMove("C3", "D5");
+  cb.submitMove("F6", "D5");
+  cb.submitMove("D1", "G4");
+  cb.submitMove("D5", "F6");
+  cb.submitMove("G4", "E6");
+}
 
+void testShortGame(ChessBoard& cb){
+  cb.resetBoard();
+
+  cb.submitMove("E2","E4");
+  cb.submitMove("E7","E5");
+  cb.submitMove("F1","C4");
+  cb.submitMove("F8","C5");
+  cb.submitMove("D1","H5");
+  cb.submitMove("G8","F6");
+  cb.submitMove("E2","E4");
+  cb.submitMove("H5","F7");
+}
+
+void testKeresVArlamowski(ChessBoard& cb){
+  cb.resetBoard();
+
+  cb.submitMove("E2","E4");
+  cb.submitMove("C7","C6");
+  cb.submitMove("B1","C3");
+  cb.submitMove("D7","D5");
+  cb.submitMove("G1","F3");
+  cb.submitMove("D5","E4");
+  cb.submitMove("C3","E4");
+  cb.submitMove("G8","F6");
+  cb.submitMove("D1","E2");
+  cb.submitMove("B8","D7");
+  cb.submitMove("E4","D6");
 }
