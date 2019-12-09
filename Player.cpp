@@ -23,9 +23,6 @@ void Player::setOpponent(Player* opponent){
   this->opponent = opponent;
 }
 
-Position Player::getKingsPosition(){
-  return kingsPosition;
-}
 
 void Player::updateKingsPosition(const ChessBoard* board){
   // Only update position if king has moved from currently recorded position
@@ -98,9 +95,6 @@ int Player::moveIsLegal(const Position& fromPosition, const Position& toPosition
     return INVALID_MOVE;
   }
 
-  // ALlows backtracking if in check without moving pieces
-  if(toPosition == opponent->getKingsPosition()) return TAKES_KING;
-
   // Ensure not taking own piece
   if(pieceToTake != nullptr && pieceToTake->getColour() == colour){
     return TAKING_OWN_PIECE;
@@ -131,10 +125,8 @@ Position Player::inCheck(ChessBoard* board){
       if(testPiece != nullptr && testPiece->getColour()!=colour){
         // If opponent's piece can legally move to player's king position then
         // the player is in check
-        processCode = opponent->makeMove({column, row}, kingsPosition, board);
-        if(processCode == TAKES_KING){
-          return {column, row};
-        }
+        processCode = opponent->moveIsLegal({column, row}, kingsPosition, board);
+        if(processCode == SUCCESS) return {column, row};
       }
     }
   }
@@ -151,11 +143,9 @@ bool Player::inCheckmate(ChessBoard* board){
 
 bool Player::stopAttacksOnKing(ChessBoard* board){
   bool canStop = true;
-  //std::cout << "POSORG" << kingsPosition;
   updateKingsPosition(board);
-  //std::cout << "POSAFET" << kingsPosition <<std::endl;
-
   Position positionAttackingKing = inCheck(board);
+
   if(positionAttackingKing != NOT_IN_CHECK){
     if(canTakeOrBlockPathToKing(positionAttackingKing, board)){
       // Cover condition of multiple pieces attacking King
@@ -173,7 +163,7 @@ bool Player::canTakeOrBlockPathToKing(Position& positionAttackingKing,
   // Get a list of the position of the attacking piece and the squares vistied
   // by it to take the king.
   Piece* attackingPiece = board->getPiece(positionAttackingKing);
-  MoveVector attackVector(positionAttackingKing, getKingsPosition());
+  MoveVector attackVector(positionAttackingKing, kingsPosition);
   std::list<Position> positionsToGetTo
                     = attackingPiece->getPositionsVistedByMove
                                           (positionAttackingKing, attackVector);
@@ -192,12 +182,12 @@ bool Player::inStalemate(ChessBoard* board){
   for(int row = 0; row < SIZEOFBOARD; row++){
     for(int column = 0; column < SIZEOFBOARD; column++){
       if(canMakeMoveFromPosition({column, row}, board)) return false;
-    }
+      }
   }
   return true;
 }
 
-bool Player::canMakeMoveFromPosition(const Position& fromPosition,
+bool Player::canMakeMoveFromPosition(const Position fromPosition,
                                                             ChessBoard* board){
   int processCode;
   // Iterate over whole board and check if can move to that position
@@ -206,6 +196,7 @@ bool Player::canMakeMoveFromPosition(const Position& fromPosition,
       processCode = makeMove(fromPosition, {column,row}, board);
       if(processCode == SUCCESS){
         board->undoMove(fromPosition, {column, row});
+        updateKingsPosition(board);
         return true;
       }
     }

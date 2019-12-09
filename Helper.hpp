@@ -24,9 +24,11 @@ const int TAKING_OWN_PIECE = 4;
 const int PIECE_IN_THE_WAY = 5;
 const int INVALID_MOVE = 6;
 const int MOVE_INTO_CHECK = 7;
-const int STALEMATE = 8;
-const int CHECKMATE = 9;
-const int TAKES_KING = 10;
+const int TAKES_KING = 9;
+const int CHECK = 10;
+const int CHECKMATE = 11;
+const int STALEMATE = 12;
+
 
 // Piece starting conditions
 const std::list<Position> WHITE_START_POS_ROOK = {{0,0}, {7,0}};

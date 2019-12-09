@@ -22,10 +22,7 @@ class Player{
                   ChessBoard* board);
 
   /* Returns true if a legal move can be made fromPosition. False otherwiese */
-  bool canMakeMoveFromPosition(const Position& fromPosition, ChessBoard* board);
-
-  /* Returns true if player is in check. False otherwise */
-  Position inCheck(ChessBoard* board);
+  bool canMakeMoveFromPosition(const Position fromPosition, ChessBoard* board);
 
   /* Returns if all attacks (if there are any) on the king can be stopped
     False otherwiese */
@@ -35,7 +32,7 @@ class Player{
     reached legally. False otherwise*/
   bool canTakeOrBlockPathToKing(Position& positionAttackingKing, ChessBoard* board);
 
-  /* Returns true can legally move toPosition. False otherwise*/
+  /* Returns true can legally move toPosition. False otherwise */
   bool canMakeMoveToPosition(const Position& toPosition, ChessBoard* board);
 
   /* Returns true if King can legally move. False otherwise*/
@@ -55,7 +52,7 @@ public:
 
   Colour getColour() const;
 
-  Position getKingsPosition();
+  // Position getKingsPosition();
 
   void setOpponent(Player* opponent);
 
@@ -71,6 +68,9 @@ public:
 
   /* Returns true if player is in stalemate. False otherwise */
   bool inStalemate(ChessBoard* board);
+
+  /* Returns first foudn position attacking the king. NOT_IN_CHECK otherwise */
+  Position inCheck(ChessBoard* board);
 
   friend std::ostream& operator<<(std::ostream & o, const Player& pl);
 

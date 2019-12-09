@@ -46,6 +46,8 @@ void testCastle(ChessBoard& cb){
 
   std::cout<< "Castle Move Up -> success" << std::endl;
   cb.submitMove("A1", "A5");
+  std::cout << std::endl;
+
 
   std::cout<< "Castle Move Down -> success" << std::endl;
   cb.submitMove("H8", "H5");
@@ -293,6 +295,8 @@ void testStalemate(ChessBoard& cb){
 
 void testCheckmate(ChessBoard& cb){
   cb.resetBoard();
+  std::cout << cb << std::endl;
+
   // 4 move checkmate
   // https://www.chess.com/article/view/the-fastest-possible-checkmate-in-chess
   cb.submitMove("F2", "F3");
@@ -304,6 +308,7 @@ void testCheckmate(ChessBoard& cb){
 
 void testInput(ChessBoard& cb){
   cb.resetBoard();
+
   cb.submitMove("A2", "A34");
   cb.submitMove("Z2", "A34");
   cb.submitMove("A-2", "A34");

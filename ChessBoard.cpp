@@ -66,8 +66,11 @@ void ChessBoard::submitMove(std::string fromPosInput, std::string toPosInput)
 
     // Switch to next player and see if in checkmate or stalemate
     currentPlayer = currentPlayer->getOpponent();
-    if(currentPlayer->inCheckmate(this)){
-      handleProcessCode(CHECKMATE, fromPosition, toPosition);
+    if(currentPlayer->inCheck(this) != NOT_IN_CHECK){
+      if(currentPlayer->inCheckmate(this)){
+        handleProcessCode(CHECKMATE, fromPosition, toPosition);
+      }
+      else handleProcessCode(CHECK, fromPosition, toPosition);
     }
     else if(currentPlayer->inStalemate(this)){
       handleProcessCode(STALEMATE, fromPosition, toPosition);
@@ -204,21 +207,33 @@ void ChessBoard::handleProcessCode(const int processCode,
       break;
     case(TAKING_OWN_PIECE):
       std::cout << *currentPlayer << " is trying to take their own piece at "
-                << toPosition << "!"; break;
+                << toPosition << "!";
+      break;
     case(PIECE_IN_THE_WAY):
     case(INVALID_MOVE):
       std::cout << *(getPiece(fromPosition)) << " cannot move to "<<
-                toPosition << "!"; break;
+                toPosition << "!";
+      break;
     case(MOVE_INTO_CHECK):
       std::cout << *(getPiece(fromPosition)) << " cannot move to " <<
-              toPosition << "(leaves "<< *currentPlayer << " in check)!"; break;
+              toPosition << "(leaves "<< *currentPlayer << " in check)!";
+      break;
+    case(CHECK):
+      std::cout << *currentPlayer << " is in check";
+      break;
     case(CHECKMATE):
-      std::cout << *currentPlayer << " is in checkmate"; break;
+      std::cout << *currentPlayer << " is in checkmate";
+      break;
     case(STALEMATE):
-      std::cout << *currentPlayer << " is in stalemate"; break;
+      std::cout << *currentPlayer << " is in stalemate";
+      break;
     case(SUCCESS):
       std::cout << *(getPiece(toPosition)) << " moves from " << fromPosition
-                << " to " << toPosition; break;
+                << " to " << toPosition;
+      if(savedToPositions.top() != nullptr){
+        std::cout << " taking " << *(savedToPositions.top());
+      }
+      break;
     default: errorMessage = "Unknown processCode " + std::to_string(processCode);
   }
     std::cout << std::endl;
@@ -256,7 +271,7 @@ std::ostream& operator<<(std::ostream & o, const ChessBoard& cb){
   }
   o << std::endl;
 
-  return o << "WILL BE FIXED";
+  return o;
 }
 
 void ChessBoard::printHorizontalLine(std::ostream & o){
