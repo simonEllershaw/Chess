@@ -35,6 +35,8 @@ int main(){
   std::cout<< "--------------------Test 8 Checkmate------------------" << std::endl;
   testCheckmate(cb);
 
+  std::cout<< "--------------------Test 8 Input------------------" << std::endl;
+  testInput(cb);
 
   return 0;
 }
@@ -263,7 +265,8 @@ void testCheck(ChessBoard& cb){
 
 void testStalemate(ChessBoard& cb){
   cb.resetBoard();
-
+  // Fastest known stalemate
+  // https://www.chess.com/article/view/the-shortest-stalemate-possible
   cb.submitMove("E2", "E3");
   cb.submitMove("A7", "A5");
   cb.submitMove("D1", "H5");
@@ -290,10 +293,22 @@ void testStalemate(ChessBoard& cb){
 
 void testCheckmate(ChessBoard& cb){
   cb.resetBoard();
-
+  // 4 move checkmate
+  // https://www.chess.com/article/view/the-fastest-possible-checkmate-in-chess
   cb.submitMove("F2", "F3");
   cb.submitMove("E7", "E5");
   cb.submitMove("G2", "G4");
   cb.submitMove("D8", "H4");
   std::cout << cb << std::endl;
+}
+
+void testInput(ChessBoard& cb){
+  cb.resetBoard();
+  cb.submitMove("A2", "A34");
+  cb.submitMove("Z2", "A34");
+  cb.submitMove("A-2", "A34");
+  cb.submitMove("A2", "A9");
+
+
+
 }

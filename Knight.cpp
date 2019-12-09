@@ -1,16 +1,16 @@
 #include "Knight.hpp"
 #include "Helper.hpp"
 
-Knight::Knight(Colour colour): Piece(colour, SYMBOL_KNIGHT){}
+Knight::Knight(Colour colour): Piece(colour, SYMBOL_KNIGHT, "Knight"){}
 
 bool Knight::moveShapeIsValid(const MoveVector& currentMoveVector,
-                                          const Piece* pieceToTake){
+                                          const Piece* pieceToTake) const{
   // King can move 1 square in any direction
-  if(currentMoveVector.is2x1LShape()) return true;
+  if(currentMoveVector.isLShaped()) return true;
   else return false;
 }
 
-std::list<Position> Knight::getPositionsVistedByMove
-            (const Position& fromPosition, const MoveVector& currentMoveVector){
+std::list<Position> Knight::getPositionsVistedByMove (const Position&
+                      fromPosition, const MoveVector& currentMoveVector) const{
   return {};
 }

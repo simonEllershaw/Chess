@@ -8,8 +8,10 @@ class Bishop: public Piece{
 public:
   Bishop(Colour color);
 
+  /* Returns true if shape specified by moveVector is a diagonaal.
+    Returns false otherwise */
   bool moveShapeIsValid(const MoveVector& currentMoveVector,
-                                            const Piece* pieceToTake) override;
+                                    const Piece* pieceToTake) const override;
 };
 
 

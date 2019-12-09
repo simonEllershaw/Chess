@@ -15,6 +15,8 @@ class ChessBoard{
   Player* whitePlayer, *blackPlayer, *currentPlayer;
   // ALlows for backtracking
   std::stack<Piece*> savedToPositions;
+  std::string startGameMsg;
+
 
   public:
     ChessBoard();
@@ -22,8 +24,7 @@ class ChessBoard{
     /* Takes an input and position to move to and attempts to update the board
       state accordingly. The move or the error caused by it are outputted to
       the command line  */
-    void submitMove(const char fromPosInput[LENGTH_INPUT_STRINGS],
-                    const char toPosInput[LENGTH_INPUT_STRINGS]);
+    void submitMove(std::string fromPosInput, std::string toPosInput);
 
     void resetBoard(const bool& noPawns = false);
 
@@ -51,12 +52,10 @@ class ChessBoard{
 
     /* Returns true if the input is of the form "A-H1-9".
       Otherwise returns false */
-    static int inputPositionIsValid(const char
-                                            inputPosition[LENGTH_INPUT_STRINGS]);
+    static int inputPositionIsValid(std::string inputPosition);
 
     /*  Map input char to position struct e.g. A1 -> {0,0}*/
-    int convertCharToPosition(const char charPosition[LENGTH_INPUT_STRINGS],
-                                            Position& position);
+    int convertCharToPosition(std::string stringPosition, Position& position);
 
     /* Deletes all pieces currently stored in the baord array */
     void deletePiecesOnBoard();
@@ -71,10 +70,13 @@ class ChessBoard{
 
     /* Takes a processCode and outputs an informative message to the command
       line */
-    static void handleProcessCode(int errorCode, Position toPosition,
-                                                        Position fromPosition);
+    void handleProcessCode(const int processCode,
+                const Position& fromPosition, const Position& toPosition) const;
 
     template<class pieceType> void initPieceType(std::list<Position> whiteStartingPositions);
+
+    static std::string convertPositionToChar(const Position& orgPosition);
+
 };
 
 #endif

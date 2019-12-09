@@ -2,6 +2,7 @@
 #define TEST_H
 #include "ChessBoard.hpp"
 
+/* Test programmes for various functionalities of the chess programme */
 void testCastle(ChessBoard& cb);
 
 void testKnight(ChessBoard& cb);
@@ -21,6 +22,8 @@ void testCheck(ChessBoard& cb);
 void testStalemate(ChessBoard& cb);
 
 void testCheckmate(ChessBoard& cb);
+
+void testInput(ChessBoard& cb);
 
 
 #endif
