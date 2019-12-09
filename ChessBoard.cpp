@@ -3,7 +3,7 @@
 #include<iostream>
 #include<string>
 #include<typeinfo>
-#include"ChessBoard.hpp"
+#include"ChessBoard.h"
 #include"Rook.hpp"
 #include"Bishop.hpp"
 #include"Helper.hpp"

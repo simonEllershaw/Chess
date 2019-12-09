@@ -2,7 +2,7 @@
 #define PLAYER_H
 
 #include"Position.hpp"
-#include"ChessBoard.hpp"
+#include"ChessBoard.h"
 #include"Helper.hpp"
 
 class ChessBoard;
