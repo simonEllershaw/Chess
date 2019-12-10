@@ -38,7 +38,7 @@ public:
   /* Update internal status of piece after it has been moved */
   virtual void updateStatus(){};
 
-  /* Update internal status of piece after it has been moved */
+  /* Returns NOT_SET unless overriden*/
   virtual int getStatus();
 
   /* Returns ostream representation of piece e.g White Rook -> WR

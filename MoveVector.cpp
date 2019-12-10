@@ -18,20 +18,24 @@ MoveVector::MoveVector(Position fromPosition, Position toPosition){
   }
 }
 
+
 bool MoveVector::isDiagonal() const{
   if(abs(normalVector.row)==1 && abs(normalVector.column)==1) return true;
   else return false;
 }
+
 
 bool MoveVector::isVertical() const{
   if(normalVector.column==0) return true;
   else return false;
 }
 
+
 bool MoveVector::isHorizontal() const{
   if(normalVector.row==0) return true;
   else return false;
 }
+
 
 bool MoveVector::isLShaped() const{
   // If move has magnitude of 2 the other componenet is either 2, 1 or 0

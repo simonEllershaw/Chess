@@ -30,7 +30,6 @@ const int CHECK = 11;
 const int CHECKMATE = 12;
 const int STALEMATE = 13;
 
-
 // Piece starting conditions
 const std::list<Position> WHITE_START_POS_ROOK = {{0,0}, {7,0}};
 const std::list<Position> WHITE_START_POS_KNIGHT = {{1,0}, {6,0}};
@@ -59,6 +58,7 @@ const int NOT_SET = -1;
   the board i.e. the black starting position */
 Position whiteToBlackStartPos(const Position& whiteStartPosition);
 
+/* Returns ostream rep of colour enum */
 std::ostream& operator<<(std::ostream & o, const Colour& c);
 
 

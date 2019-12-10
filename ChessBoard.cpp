@@ -24,27 +24,27 @@ ChessBoard::ChessBoard(){
   std::cout << startGameMsg << std::endl;
 }
 
-ChessBoard::~ChessBoard(){
-  deletePiecesOnBoard();
-  deleteSavedToPositions();
-  delete whitePlayer;
-  delete blackPlayer;
+void ChessBoard::setPiecesIntialPositions(const bool& noPawns){
+  initPieceType<Rook>(WHITE_START_POS_ROOK);
+  initPieceType<Bishop>(WHITE_START_POS_BISHOP);
+  initPieceType<Queen>(WHITE_START_POS_QUEEN);
+  initPieceType<King>(WHITE_START_POS_KING);
+  initPieceType<Knight>(WHITE_START_POS_KNIGHT);
+  // No pawns condition only used to make testing easier
+  if(!noPawns) initPieceType<Pawn>(WHITE_START_POS_PAWN);
 }
 
-void ChessBoard::resetBoard(const bool& noPawns){
-  // Delete replace pieces
-  deletePiecesOnBoard();
-  deleteSavedToPositions();
-  setPiecesIntialPositions(noPawns);
 
-  // Reset player states
-  whitePlayer->reset();
-  blackPlayer->reset();
-  currentPlayer = whitePlayer;
-
-  std::cout << startGameMsg << std::endl;
+template<class T>
+void ChessBoard::initPieceType(std::list<Position> whiteStartingPositions){
+  for(auto it = whiteStartingPositions.begin();
+                                      it != whiteStartingPositions.end(); ++it){
+    // Make and place white and opposing black piece
+    board[it->row][it->column] = new T(WHITE);
+    const Position blackStartPos = whiteToBlackStartPos(*it);
+    board[blackStartPos.row][blackStartPos.column] = new T(BLACK);
+  }
 }
-
 
 void ChessBoard::submitMove(std::string fromPosInput, std::string toPosInput)
 {
@@ -74,83 +74,6 @@ void ChessBoard::submitMove(std::string fromPosInput, std::string toPosInput)
     else if(currentPlayer->inStalemate(this)){
       handleProcessCode(STALEMATE, fromPosition, toPosition);
     }
-  }
-}
-
-bool ChessBoard::pieceInTheWay(Piece* pieceToMove, const Position& fromPosition,
-                                          const MoveVector& currentMoveVector){
-  std::list<Position> positionsToMoveThrough = pieceToMove
-                ->getPositionsVistedByMove(fromPosition, currentMoveVector);
-  // Iterate through positions and return true if a piece on any of them
-  for(auto it = positionsToMoveThrough.begin(); it != positionsToMoveThrough.end();
-      ++it){
-    if(getPiece(*it) != nullptr) return true;
-  }
-  return false;
-}
-
-Piece* ChessBoard::getPiece(Position piecePosition) const{
-  return board[piecePosition.row][piecePosition.column];
-}
-
-
-void ChessBoard::takePiece(Position piecePosition){
-  // First check taking a piece of a different colour
-  savedToPositions.push(getPiece(piecePosition));
-  board[piecePosition.row][piecePosition.column] = nullptr;
-}
-
-
-void ChessBoard::movePiece(Position fromPosition, Position toPosition){
-  // Always take piece even if nothing is there so stack can be updated for
-  // backtracking
-  takePiece(toPosition);
-  board[toPosition.row][toPosition.column] = getPiece(fromPosition);
-  board[fromPosition.row][fromPosition.column] = nullptr;
-}
-
-
-void ChessBoard::deletePiecesOnBoard(){
-  for(int row = 0; row < SIZEOFBOARD; row++){
-    for(int column = 0; column < SIZEOFBOARD; column++){
-      if(board[row][column]!=nullptr){
-        delete board[row][column];
-        // Replace with empty position
-        board[row][column] = nullptr;
-      }
-    }
-  }
-}
-
-void ChessBoard::deleteSavedToPositions(){
-  Piece* takenPiece;
-  while(!savedToPositions.empty()){
-    takenPiece = savedToPositions.top();
-    savedToPositions.pop();
-    // Nullptr on stack to allow backtracking
-    if(!(takenPiece == nullptr)) delete takenPiece;
-  }
-}
-
-
-void ChessBoard::setPiecesIntialPositions(const bool& noPawns){
-  initPieceType<Rook>(WHITE_START_POS_ROOK);
-  initPieceType<Bishop>(WHITE_START_POS_BISHOP);
-  initPieceType<Queen>(WHITE_START_POS_QUEEN);
-  initPieceType<King>(WHITE_START_POS_KING);
-  initPieceType<Knight>(WHITE_START_POS_KNIGHT);
-  // No pawns condition only used to make testing easier
-  if(!noPawns) initPieceType<Pawn>(WHITE_START_POS_PAWN);
-}
-
-template<class pieceType> void ChessBoard::initPieceType
-                                  (std::list<Position> whiteStartingPositions){
-  for(auto it = whiteStartingPositions.begin();
-                                      it != whiteStartingPositions.end(); ++it){
-    // Make and place white and opposing black piece
-    board[it->row][it->column] = new pieceType(WHITE);
-    const Position blackStartPos = whiteToBlackStartPos(*it);
-    board[blackStartPos.row][blackStartPos.column] = new pieceType(BLACK);
   }
 }
 
@@ -185,6 +108,41 @@ int ChessBoard::convertCharToPosition(std::string stringPosition,
   return SUCCESS;
 }
 
+
+Piece* ChessBoard::getPiece(Position piecePosition) const{
+  return board[piecePosition.row][piecePosition.column];
+}
+
+
+void ChessBoard::takePiece(Position piecePosition){
+  // First check taking a piece of a different colour
+  savedToPositions.push(getPiece(piecePosition));
+  board[piecePosition.row][piecePosition.column] = nullptr;
+}
+
+
+void ChessBoard::movePiece(Position fromPosition, Position toPosition){
+  // Always take piece even if nothing is there so stack can be updated for
+  // backtracking
+  takePiece(toPosition);
+  board[toPosition.row][toPosition.column] = getPiece(fromPosition);
+  board[fromPosition.row][fromPosition.column] = nullptr;
+}
+
+
+bool ChessBoard::pieceInTheWay(Piece* pieceToMove, const Position& fromPosition,
+                                          const MoveVector& currentMoveVector){
+  std::list<Position> positionsToMoveThrough = pieceToMove
+                ->getPositionsVistedByMove(fromPosition, currentMoveVector);
+  // Iterate through positions and return true if a piece on any of them
+  for(auto it = positionsToMoveThrough.begin();
+      it != positionsToMoveThrough.end(); ++it){
+    if(getPiece(*it) != nullptr) return true;
+  }
+  return false;
+}
+
+
 void ChessBoard::undoMove(const Position fromPosition, const Position toPosition
                           ,const int moveProcessCode){
   board[fromPosition.row][fromPosition.column] =
@@ -196,6 +154,7 @@ void ChessBoard::undoMove(const Position fromPosition, const Position toPosition
   // King only in stack due to castling (as cannot be taken)
   if(moveProcessCode == CASTLING) undoCastle(fromPosition, toPosition);
 }
+
 
 void ChessBoard::undoCastle(const Position kingFromPosition,
                             const Position kingToPosition){
@@ -210,6 +169,7 @@ void ChessBoard::undoCastle(const Position kingFromPosition,
   undoMove(castleFromPosition, castleToPosition);
 }
 
+
 void ChessBoard::handleProcessCode(const int processCode,
                                   const Position& fromPosition,
                                   const Position& toPosition) const{
@@ -219,33 +179,29 @@ void ChessBoard::handleProcessCode(const int processCode,
         std::cout << "There is no piece at position " << fromPosition<< "!";
         break;
     case(INCORRECT_PIECE_COLOUR):
-      std::cout << "It's not " << *(currentPlayer) << "'s turn to move!";
-      break;
+      std::cout << "It's not " << *(currentPlayer) << "'s turn to move!"; break;
     case(TAKING_OWN_PIECE):
       std::cout << *currentPlayer << " is trying to take their own piece at "
-                << toPosition << "!";
-      break;
+                << toPosition << "!"; break;
     case(PIECE_IN_THE_WAY):
+    case(TAKES_KING):
     case(INVALID_MOVE):
       std::cout << *(getPiece(fromPosition)) << " cannot move to "<<
-                toPosition << "!";
-      break;
+                toPosition << "!"; break;
     case(MOVE_INTO_CHECK):
       std::cout << *(getPiece(fromPosition)) << " cannot move to " <<
-              toPosition << "(leaves "<< *currentPlayer << " in check)!";
+              toPosition << " (leaves "<< *currentPlayer << " in check)!";
       break;
     case(CHECK):
-      std::cout << *currentPlayer << " is in check";
-      break;
+      std::cout << *currentPlayer << " is in check"; break;
     case(CHECKMATE):
-      std::cout << *currentPlayer << " is in checkmate";
-      break;
+      std::cout << *currentPlayer << " is in checkmate"; break;
     case(STALEMATE):
-      std::cout << *currentPlayer << " is in stalemate";
-      break;
+      std::cout << *currentPlayer << " is in stalemate"; break;
     case(SUCCESS):
       std::cout << *(getPiece(toPosition)) << " moves from " << fromPosition
                 << " to " << toPosition;
+      // Add info if taking a piece
       if(savedToPositions.top() != nullptr){
         std::cout << " taking " << *(savedToPositions.top());
       }
@@ -255,13 +211,6 @@ void ChessBoard::handleProcessCode(const int processCode,
     std::cout << std::endl;
 }
 
-std::string ChessBoard::convertPositionToChar(const Position& orgPosition){
-  return {char(orgPosition.column + 'A'), char(orgPosition.row + '1'), '\0'};
-}
-
-void ChessBoard::pushToSavedPositions(Piece* pieceToSave){
-  savedToPositions.push(pieceToSave);
-}
 
 /* Prints a representation of the current board state to the command line*/
 std::ostream& operator<<(std::ostream & o, const ChessBoard& cb){
@@ -293,10 +242,57 @@ std::ostream& operator<<(std::ostream & o, const ChessBoard& cb){
   return o;
 }
 
+
 void ChessBoard::printHorizontalLine(std::ostream & o){
   o << " ";
   for(int col=0; col<SIZEOFBOARD; col++){
     o <<"___";
   }
   o << std::endl;
+}
+
+
+void ChessBoard::resetBoard(const bool& noPawns){
+  // Delete replace pieces
+  deletePiecesOnBoard();
+  deleteSavedToPositions();
+  setPiecesIntialPositions(noPawns);
+
+  // Reset player states
+  whitePlayer->reset();
+  blackPlayer->reset();
+  currentPlayer = whitePlayer;
+
+  std::cout << startGameMsg << std::endl;
+}
+
+ChessBoard::~ChessBoard(){
+  deletePiecesOnBoard();
+  deleteSavedToPositions();
+  delete whitePlayer;
+  delete blackPlayer;
+}
+
+
+void ChessBoard::deletePiecesOnBoard(){
+  for(int row = 0; row < SIZEOFBOARD; row++){
+    for(int column = 0; column < SIZEOFBOARD; column++){
+      if(board[row][column]!=nullptr){
+        delete board[row][column];
+        // Replace with empty position
+        board[row][column] = nullptr;
+      }
+    }
+  }
+}
+
+
+void ChessBoard::deleteSavedToPositions(){
+  Piece* takenPiece;
+  while(!savedToPositions.empty()){
+    takenPiece = savedToPositions.top();
+    savedToPositions.pop();
+    // Nullptr on stack to allow backtracking
+    if(!(takenPiece == nullptr)) delete takenPiece;
+  }
 }

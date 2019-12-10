@@ -304,8 +304,6 @@ void testStalemate(ChessBoard& cb){
 
 void testCheckmate(ChessBoard& cb){
   cb.resetBoard();
-  std::cout << cb << std::endl;
-
   // 4 move checkmate
   // https://www.chess.com/article/view/the-fastest-possible-checkmate-in-chess
   cb.submitMove("F2", "F3");
@@ -313,6 +311,10 @@ void testCheckmate(ChessBoard& cb){
   cb.submitMove("G2", "G4");
   cb.submitMove("D8", "H4");
   std::cout << cb << std::endl;
+
+  std::cout << "Continuing after checkmate-> Fail" << std::endl;
+  cb.submitMove("A2", "A3");
+  cb.submitMove("A2", "A3");
 }
 
 void testInput(ChessBoard& cb){

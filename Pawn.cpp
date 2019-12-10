@@ -4,6 +4,7 @@
 
 Pawn::Pawn(Colour colour): RecordMovePiece(colour, SYMBOL_PAWN, "Pawn"){}
 
+
 int Pawn::moveShapeIsValid(const MoveVector& currentMoveVector,
                                           const Piece* pieceToTake) const{
   // Moving in wrong direction w.r.t colour (white = 1, black= -1)

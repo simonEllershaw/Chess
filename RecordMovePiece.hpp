@@ -12,10 +12,6 @@ protected:
 public:
   RecordMovePiece(Colour colour, char symbol, std::string name);
 
-  /* Returns true if move is horizontal or vertical. Returns false otherwise */
-  virtual int moveShapeIsValid(const MoveVector& currentMoveVector,
-                                      const Piece* pieceToTake) const = 0;
-
   /* Records that the piece hasMoved */
   void updateStatus() override;
 
