@@ -136,7 +136,7 @@ bool ChessBoard::pieceInTheWay(Piece* pieceToMove, const Position& fromPosition,
                 ->getPositionsVistedByMove(fromPosition, currentMoveVector);
   // Iterate through positions and return true if a piece on any of them
   for(auto it = positionsToMoveThrough.begin();
-      it != positionsToMoveThrough.end(); ++it){
+                                    it != positionsToMoveThrough.end(); ++it){
     if(getPiece(*it) != nullptr) return true;
   }
   return false;
