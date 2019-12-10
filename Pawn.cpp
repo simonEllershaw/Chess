@@ -2,11 +2,9 @@
 #include "Helper.hpp"
 
 
-Pawn::Pawn(Colour colour): Piece(colour, SYMBOL_PAWN, "Pawn"){
-  hasMoved = false;
-}
+Pawn::Pawn(Colour colour): RecordMovePiece(colour, SYMBOL_PAWN, "Pawn"){}
 
-bool Pawn::moveShapeIsValid(const MoveVector& currentMoveVector,
+int Pawn::moveShapeIsValid(const MoveVector& currentMoveVector,
                                           const Piece* pieceToTake) const{
   // Moving in wrong direction w.r.t colour (white = 1, black= -1)
   if(currentMoveVector.normalVector.row != colour) return false;
@@ -21,8 +19,4 @@ bool Pawn::moveShapeIsValid(const MoveVector& currentMoveVector,
   else if(pieceToTake != nullptr && currentMoveVector.isDiagonal()
           && currentMoveVector.magnitude == 1) return true;
   return false;
-}
-
-void Pawn::updateStatus(){
-  hasMoved = true;
 }

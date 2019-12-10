@@ -38,6 +38,7 @@ void Player::updateKingsPosition(const ChessBoard* board){
   }
 }
 
+
 bool Player::isPlayersKing(Piece* possibleKing){
   if(possibleKing != nullptr && possibleKing->getSymbol() == SYMBOL_KING
                                   && possibleKing->getColour() == colour){
@@ -56,19 +57,22 @@ int Player::makeMove(const Position& fromPosition, const Position& toPosition,
   int processCode;
 
   processCode = moveIsLegal(fromPosition, toPosition, board);
-  if(processCode!=SUCCESS) return processCode;
+  if(processCode!=SUCCESS && processCode != CASTLING) return processCode;
 
   board->movePiece(fromPosition, toPosition);
+
   updateKingsPosition(board);
 
   // If move results in player being in check undo move
   if(inCheck(board) != NOT_IN_CHECK){
-    board->undoMove(fromPosition, toPosition);
+    board->undoMove(fromPosition, toPosition, processCode);
     // King may have backtracked so check king position
+    updateKingsPosition(board);
     return MOVE_INTO_CHECK;
   }
   return SUCCESS;
 }
+
 
 int Player::moveIsLegal(const Position& fromPosition, const Position& toPosition,
                         ChessBoard* board){
@@ -88,18 +92,62 @@ int Player::moveIsLegal(const Position& fromPosition, const Position& toPosition
 
   // Check move shape is valid and no pieces in the way
   const MoveVector currentMoveVector(fromPosition, toPosition);
-  if(!pieceToMove->moveShapeIsValid(currentMoveVector, pieceToTake)){
-    return INVALID_MOVE;
-  }
   if(board->pieceInTheWay(pieceToMove, fromPosition, currentMoveVector)){
     return INVALID_MOVE;
   }
 
+  int moveValid = pieceToMove->moveShapeIsValid(currentMoveVector, pieceToTake);
+  if(moveValid == CASTLING && castleIsValid(fromPosition, toPosition, board)){
+      return CASTLING;
+    }
+  else if(!moveValid || moveValid == CASTLING) return INVALID_MOVE;
+
   // Ensure not taking own piece
   if(pieceToTake != nullptr && pieceToTake->getColour() == colour){
+    // Check if castling- king taking rook of the same colour and have not moved
     return TAKING_OWN_PIECE;
   }
+
   return SUCCESS;
+}
+
+
+bool Player::castleIsValid(const Position& fromPosition,
+                          const Position& toPosition, ChessBoard* board){
+  Piece* king = board->getPiece(fromPosition);
+  // King cannot have moved
+  if(king->getStatus() == HAS_MOVED) return false;
+
+  // Get castle from the correct side
+  Position rookPosition = toPosition;
+  if(toPosition.column == 2) rookPosition.column = 0;
+  else rookPosition.column = 7;
+  Piece* rook = board->getPiece(rookPosition);
+
+  // If hasn't moved must be a rook (as still in starting position)
+  if(rook->getStatus() == HAS_MOVED) return false;
+
+  // Check nothing between king and rook
+  const MoveVector currentMoveVector(rookPosition, fromPosition);
+  if(board->pieceInTheWay(rook, rookPosition, currentMoveVector)){
+    return false;
+  }
+
+  // Ensure king does not move through check. Ending in check is caught by
+  // main process flow.
+  int kingDirection = (toPosition.column - fromPosition.column)/2;
+  Position intermediateKingPos = {fromPosition.column + kingDirection,
+                                                              fromPosition.row};
+  board->movePiece(fromPosition, intermediateKingPos);
+  Position checkStatus = inCheck(board);
+  board->undoMove(fromPosition, intermediateKingPos);
+  if(checkStatus != NOT_IN_CHECK) return false;
+
+  // Castle rook into position then can just use normal move logic to move king
+  // intermed king pos is also rook end point
+  board->movePiece(rookPosition, intermediateKingPos);
+
+  return true;
 }
 
 
@@ -134,12 +182,14 @@ Position Player::inCheck(ChessBoard* board){
   return NOT_IN_CHECK;
 }
 
+
 bool Player::inCheckmate(ChessBoard* board){
   // Checkmate if in check, king cannot move and attacking pieces cannot be
   // legally taken or blocked from the king
   if(!kingCanMove(board) && !stopAttacksOnKing(board)) return true;
   else return false;
 }
+
 
 bool Player::stopAttacksOnKing(ChessBoard* board){
   bool canStop = true;
@@ -157,6 +207,7 @@ bool Player::stopAttacksOnKing(ChessBoard* board){
   }
   return canStop;
 }
+
 
 bool Player::canTakeOrBlockPathToKing(Position& positionAttackingKing,
                                                             ChessBoard* board){
@@ -177,6 +228,7 @@ bool Player::canTakeOrBlockPathToKing(Position& positionAttackingKing,
   return false;
 }
 
+
 bool Player::inStalemate(ChessBoard* board){
   // If no pieces on the board can move it is a stalemate
   for(int row = 0; row < SIZEOFBOARD; row++){
@@ -186,6 +238,7 @@ bool Player::inStalemate(ChessBoard* board){
   }
   return true;
 }
+
 
 bool Player::canMakeMoveFromPosition(const Position fromPosition,
                                                             ChessBoard* board){
@@ -204,6 +257,7 @@ bool Player::canMakeMoveFromPosition(const Position fromPosition,
   return false;
 }
 
+
 bool Player::canMakeMoveToPosition(const Position& toPosition,
                                                             ChessBoard* board){
   int processCode;
@@ -219,6 +273,7 @@ bool Player::canMakeMoveToPosition(const Position& toPosition,
   }
   return false;
 }
+
 
 std::ostream& operator<<(std::ostream & o, const Player& pl){
   return o << pl.getColour();

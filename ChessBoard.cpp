@@ -63,7 +63,6 @@ void ChessBoard::submitMove(std::string fromPosInput, std::string toPosInput)
   else{
     getPiece(toPosition)->updateStatus();
     handleProcessCode(SUCCESS, fromPosition, toPosition);
-
     // Switch to next player and see if in checkmate or stalemate
     currentPlayer = currentPlayer->getOpponent();
     if(currentPlayer->inCheck(this) != NOT_IN_CHECK){
@@ -129,7 +128,7 @@ void ChessBoard::deleteSavedToPositions(){
     takenPiece = savedToPositions.top();
     savedToPositions.pop();
     // Nullptr on stack to allow backtracking
-    if(takenPiece != nullptr) delete takenPiece;
+    if(!(takenPiece == nullptr)) delete takenPiece;
   }
 }
 
@@ -186,12 +185,29 @@ int ChessBoard::convertCharToPosition(std::string stringPosition,
   return SUCCESS;
 }
 
-void ChessBoard::undoMove(const Position fromPosition, const Position toPosition){
+void ChessBoard::undoMove(const Position fromPosition, const Position toPosition
+                          ,const int moveProcessCode){
   board[fromPosition.row][fromPosition.column] =
                                       board[toPosition.row][toPosition.column];
   // Use savedToPositions for backtracking
   board[toPosition.row][toPosition.column] = savedToPositions.top();
   savedToPositions.pop();
+
+  // King only in stack due to castling (as cannot be taken)
+  if(moveProcessCode == CASTLING) undoCastle(fromPosition, toPosition);
+}
+
+void ChessBoard::undoCastle(const Position kingFromPosition,
+                            const Position kingToPosition){
+  int kingDirection = (kingToPosition.column - kingFromPosition.column)/2;
+  int backRow = kingToPosition.row;
+  // Castle position is 1 away from original king position in direction of king
+  Position castleFromPosition = {kingFromPosition.column + kingDirection,
+                                backRow};
+  // If king moved +ve it was the RH castle that moved and vice versa
+  Position castleToPosition = {((kingDirection>0) ? 7 : 0), backRow};
+
+  undoMove(castleFromPosition, castleToPosition);
 }
 
 void ChessBoard::handleProcessCode(const int processCode,
@@ -243,6 +259,9 @@ std::string ChessBoard::convertPositionToChar(const Position& orgPosition){
   return {char(orgPosition.column + 'A'), char(orgPosition.row + '1'), '\0'};
 }
 
+void ChessBoard::pushToSavedPositions(Piece* pieceToSave){
+  savedToPositions.push(pieceToSave);
+}
 
 /* Prints a representation of the current board state to the command line*/
 std::ostream& operator<<(std::ostream & o, const ChessBoard& cb){

@@ -1,10 +1,9 @@
 #ifndef PAWN_H
 #define PAWN_H
 
-#include "Piece.hpp"
+#include "RecordMovePiece.hpp"
 
-class Pawn: public Piece{
-bool hasMoved;
+class Pawn: public RecordMovePiece{
 
 public:
   Pawn(Colour color);
@@ -14,11 +13,8 @@ public:
       2) Moves 2 positions foward vertically not taking a piece on it's 1st move
       3) Moves 1 square diagionally taking a piece
     False otherwise */
-  bool moveShapeIsValid(const MoveVector& currentMoveVector,
+  int moveShapeIsValid(const MoveVector& currentMoveVector,
                                       const Piece* pieceToTake) const override;
-
-  /* Records that the pawn hasMoved */
-  void updateStatus() override;
 };
 
 #endif

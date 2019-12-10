@@ -25,9 +25,10 @@ const int PIECE_IN_THE_WAY = 5;
 const int INVALID_MOVE = 6;
 const int MOVE_INTO_CHECK = 7;
 const int TAKES_KING = 9;
-const int CHECK = 10;
-const int CHECKMATE = 11;
-const int STALEMATE = 12;
+const int CASTLING = 10;
+const int CHECK = 11;
+const int CHECKMATE = 12;
+const int STALEMATE = 13;
 
 
 // Piece starting conditions
@@ -47,6 +48,10 @@ const char SYMBOL_KING = 'K';
 const char SYMBOL_QUEEN = 'Q';
 const char SYMBOL_PAWN = 'P';
 
+// Piece Status
+const int HAS_NOT_MOVED = 0;
+const int HAS_MOVED = 1;
+const int NOT_SET = -1;
 
 // Helper functions
 

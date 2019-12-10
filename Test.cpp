@@ -38,15 +38,15 @@ int main(){
   std::cout<< "--------------------Test 8 Input------------------" << std::endl;
   testInput(cb);
 
+  std::cout<< "--------------------Test 8 Castling---------------" << std::endl;
+  testCastling(cb);
+
   std::cout<< "----------------Test 9 Sample games---------------" << std::endl;
   test10MoveCheckmate(cb);
-  std::cout << cb << std::endl;
 
   testShortGame(cb);
-  std::cout << cb << std::endl;
 
   testKeresVArlamowski(cb);
-  std::cout << cb << std::endl;
 
   return 0;
 }
@@ -177,7 +177,6 @@ void testKing(ChessBoard& cb){
   cb.submitMove("E7", "E5");
   std::cout << std::endl;
 
-  cb.resetBoard();
 }
 
 void testPawn(ChessBoard& cb){
@@ -325,6 +324,78 @@ void testInput(ChessBoard& cb){
   cb.submitMove("A2", "A9");
 }
 
+
+void testCastling(ChessBoard& cb){
+  std::cout << "Castling shortside-> Success" << std::endl;
+  cb.resetBoard();
+  cb.submitMove("G2", "G4");
+  cb.submitMove("A7", "A5");
+  cb.submitMove("F1", "H3");
+  cb.submitMove("A8", "A6");
+  cb.submitMove("G1", "F3");
+  cb.submitMove("H7", "H5");
+  cb.submitMove("E1", "G1");
+  std::cout << cb << std::endl;
+
+  std::cout << "Castling longside-> Success" << std::endl;
+  cb.resetBoard(NO_PAWNS);
+  cb.submitMove("D1", "D2");
+  cb.submitMove("A8", "A7");
+  cb.submitMove("C1", "A3");
+  cb.submitMove("A7", "A8");
+  cb.submitMove("B1", "C3");
+  cb.submitMove("A8", "A7");
+  cb.submitMove("E1", "C1");
+  std::cout << cb << std::endl;
+
+  std::cout << "Castle with pieces in the way -> Fail" << std::endl;
+  cb.resetBoard();
+  cb.submitMove("E1", "G1");
+  std::cout << std::endl;
+
+  std::cout<<"Cannot castle once a castling piece has moved -> Fail"<<std::endl;
+  cb.resetBoard();
+  cb.submitMove("G2", "G4");
+  cb.submitMove("A7", "A5");
+  cb.submitMove("F1", "H3");
+  cb.submitMove("A8", "A6");
+  cb.submitMove("G1", "F3");
+  cb.submitMove("H7", "H5");
+  cb.submitMove("H1", "G1");
+  cb.submitMove("B7", "B6");
+  cb.submitMove("G1", "H1");
+  cb.submitMove("B6", "B5");
+  cb.submitMove("E1", "G1");
+  std::cout << std::endl;
+
+
+  std::cout << "Castle through check -> Fail" << std::endl;
+  cb.resetBoard(NO_PAWNS);
+  cb.submitMove("G2", "G4");
+  cb.submitMove("A7", "A5");
+  cb.submitMove("F1", "H3");
+  cb.submitMove("A8", "A7");
+  cb.submitMove("G1", "F3");
+  cb.submitMove("D8", "D3");
+  cb.submitMove("E1", "G1");
+  std::cout << cb << std::endl;
+
+
+  std::cout << "Castling out of check -> Success" << std::endl;
+  cb.resetBoard();
+  cb.submitMove("F2", "F3");
+  cb.submitMove("E7", "E5");
+  cb.submitMove("G2", "G4");
+  cb.submitMove("A7", "A6");
+  cb.submitMove("F1", "G2");
+  cb.submitMove("A6", "A5");
+  cb.submitMove("G1", "H3");
+  cb.submitMove("D8", "H4");
+  std::cout << cb << std::endl;
+
+  // cb.submitMove("E1", "H1");
+}
+
 void test10MoveCheckmate(ChessBoard& cb){
   cb.resetBoard();
 
@@ -345,6 +416,8 @@ void test10MoveCheckmate(ChessBoard& cb){
   cb.submitMove("D1", "G4");
   cb.submitMove("D5", "F6");
   cb.submitMove("G4", "E6");
+
+  std::cout << cb << std::endl;
 }
 
 void testShortGame(ChessBoard& cb){
@@ -358,6 +431,8 @@ void testShortGame(ChessBoard& cb){
   cb.submitMove("G8","F6");
   cb.submitMove("E2","E4");
   cb.submitMove("H5","F7");
+
+  std::cout << cb << std::endl;
 }
 
 void testKeresVArlamowski(ChessBoard& cb){
@@ -374,4 +449,6 @@ void testKeresVArlamowski(ChessBoard& cb){
   cb.submitMove("D1","E2");
   cb.submitMove("B8","D7");
   cb.submitMove("E4","D6");
+
+  std::cout << cb << std::endl;
 }

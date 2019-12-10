@@ -25,6 +25,8 @@ void testCheckmate(ChessBoard& cb);
 
 void testInput(ChessBoard& cb);
 
+void testCastling(ChessBoard& cb);
+
 void test10MoveCheckmate(ChessBoard& cb);
 
 void test_game(ChessBoard& cb);

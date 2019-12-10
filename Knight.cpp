@@ -3,7 +3,7 @@
 
 Knight::Knight(Colour colour): Piece(colour, SYMBOL_KNIGHT, "Knight"){}
 
-bool Knight::moveShapeIsValid(const MoveVector& currentMoveVector,
+int Knight::moveShapeIsValid(const MoveVector& currentMoveVector,
                                           const Piece* pieceToTake) const{
   // King can move 1 square in any direction
   if(currentMoveVector.isLShaped()) return true;

@@ -1,9 +1,9 @@
 #include "Rook.hpp"
 #include "Helper.hpp"
 
-Rook::Rook(Colour colour): Piece(colour, SYMBOL_ROOK, "Rook"){}
+Rook::Rook(Colour colour): RecordMovePiece(colour, SYMBOL_ROOK, "Rook"){}
 
-bool Rook::moveShapeIsValid(const MoveVector& currentMoveVector,
+int Rook::moveShapeIsValid(const MoveVector& currentMoveVector,
                                           const Piece* pieceToTake) const{
   if(currentMoveVector.isHorizontal() || currentMoveVector.isVertical()){
     return true;

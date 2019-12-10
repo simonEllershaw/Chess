@@ -39,8 +39,13 @@ class ChessBoard{
     void movePiece(Position fromPosition, Position toPosition);
 
     /* Returns board to state before a move was made. */
-    void undoMove(const Position fromPosition, const Position toPosition);
+    void undoMove(const Position fromPosition, const Position toPosition,
+                                        const int moveProcessCode = SUCCESS);
 
+    void undoCastle(const Position kingFromPosition,
+                                                const Position kingToPosition);
+
+    void pushToSavedPositions(Piece* pieceToSave);
 
     bool pieceInTheWay(Piece* pieceToMove, const Position& fromPosition,
                                           const MoveVector& currentMoveVector);

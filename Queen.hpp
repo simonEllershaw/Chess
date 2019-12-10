@@ -9,7 +9,7 @@ public:
   Queen(Colour color);
 
   /* Returns true if move is straight. False otherwise */
-  bool moveShapeIsValid(const MoveVector& currentMoveVector,
+  int moveShapeIsValid(const MoveVector& currentMoveVector,
                                       const Piece* pieceToTake) const override;
 };
 

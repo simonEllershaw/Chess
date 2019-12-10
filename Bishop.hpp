@@ -10,7 +10,7 @@ public:
 
   /* Returns true if shape specified by moveVector is a diagonaal.
     Returns false otherwise */
-  bool moveShapeIsValid(const MoveVector& currentMoveVector,
+  int moveShapeIsValid(const MoveVector& currentMoveVector,
                                     const Piece* pieceToTake) const override;
 };
 

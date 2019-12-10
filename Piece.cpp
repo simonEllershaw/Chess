@@ -13,6 +13,11 @@ char Piece::getSymbol() const{
   return symbol;
 }
 
+int Piece::getStatus(){
+  return NOT_SET;
+}
+
+
 std::list<Position> Piece::getPositionsVistedByMove
                                     (const Position& fromPosition,
                                     const MoveVector& currentMoveVector) const{

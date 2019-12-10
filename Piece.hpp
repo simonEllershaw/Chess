@@ -26,7 +26,7 @@ public:
 
   /* Returns true if moveShape specified by the moveVector is valid.
     False otherwise */
-  virtual bool moveShapeIsValid(const MoveVector& currentMoveVector,
+  virtual int moveShapeIsValid(const MoveVector& currentMoveVector,
                                 const Piece* pieceToTake) const = 0;
 
 
@@ -37,6 +37,9 @@ public:
 
   /* Update internal status of piece after it has been moved */
   virtual void updateStatus(){};
+
+  /* Update internal status of piece after it has been moved */
+  virtual int getStatus();
 
   /* Returns ostream representation of piece e.g White Rook -> WR
     Used when printing board*/

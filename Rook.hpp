@@ -1,15 +1,17 @@
 #ifndef ROOK_H
 #define ROOK_H
 
-#include "Piece.hpp"
+#include "RecordMovePiece.hpp"
 
-class Rook: public Piece{
+class Rook: public RecordMovePiece{
 
 public:
   Rook(Colour color);
 
   /* Returns true if move is horizontal or vertical. Returns false otherwise */
-  bool moveShapeIsValid(const MoveVector& currentMoveVector,
+  int moveShapeIsValid(const MoveVector& currentMoveVector,
                                       const Piece* pieceToTake) const override;
 };
+
+
 #endif

@@ -44,6 +44,10 @@ class Player{
   /* Returns true if Piece is player's King. False otherwise. */
   bool isPlayersKing(Piece* possibleKing);
 
+  bool castleIsValid(const Position& fromPosition, const Position& toPosition,
+                                                          ChessBoard* board);
+
+
 
 public:
   Player(Position kingsPosition, Colour colour, Player* opponent);
